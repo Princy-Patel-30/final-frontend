@@ -1,0 +1,131 @@
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormFieldConfig, formTypes } from '../../Config/FormConfig';
+import { FormButtonConfig } from '../../Config/ButtonConfig';
+import { TextField } from '@mui/material';
+import Button from './Button';
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from '../../Validations/authSchema';
+import PropTypes from 'prop-types';
+import { useRef, useEffect, useState } from 'react';
+
+const schemaMap = {
+  [formTypes.REGISTER]: registerSchema,
+  [formTypes.LOGIN]: loginSchema,
+  [formTypes.FORGOT_PASSWORD]: forgotPasswordSchema,
+  [formTypes.RESET_PASSWORD]: resetPasswordSchema,
+};
+
+const Form = ({ formType, onSubmit }) => {
+  const [clickedButton, setClickedButton] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus,
+  } = useForm({
+    mode: 'onTouched',
+    reValidateMode: 'onTouched',
+    resolver: yupResolver(schemaMap[formType] || registerSchema), // fallback
+  });
+
+  const fields = FormFieldConfig[formType] || [];
+  const buttons = FormButtonConfig[formType] || [];
+
+  const inputRefs = useRef([]);
+
+  useEffect(() => {
+    if (fields.length > 0) {
+      setFocus(fields[0].name);
+    }
+  }, [fields, setFocus]);
+
+  const handleKeyDown = (e, idx) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (idx < fields.length - 1) {
+        const nextField = fields[idx + 1];
+        setFocus(nextField.name);
+      } else {
+        setClickedButton(
+          buttons.find((btn) => typeof btn === 'string' || btn.type)?.type ||
+            null,
+        );
+        handleSubmit((data) => onSubmit(data, clickedButton))();
+      }
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit((data) => onSubmit(data, clickedButton))}
+      className="w-full space-y-6"
+    >
+      {fields.map((field, index) => (
+        <div key={field.name} className="flex flex-col">
+          <TextField
+            {...register(field.name)}
+            type={field.type}
+            label={field.placeholder}
+            variant="outlined"
+            error={!!errors[field.name]}
+            helperText={errors[field.name]?.message}
+            fullWidth
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            inputRef={(el) => (inputRefs.current[index] = el)}
+          />
+        </div>
+      ))}
+
+      <div className="flex w-full gap-3 space-x-2">
+        {buttons.map((btn) => {
+          const type = typeof btn === 'string' ? btn : btn.type;
+          const onClick =
+            typeof btn === 'object' && btn.onClick ? btn.onClick : undefined;
+
+          const isSubmitType = !['cancel', 'back', 'close'].includes(type);
+          const buttonType = isSubmitType ? 'submit' : 'button';
+
+          return (
+            <Button
+              key={type}
+              type={type}
+              text={
+                type.charAt(0).toUpperCase() +
+                type.slice(1).replace(/([A-Z])/g, ' $1')
+              }
+              onClick={(e) => {
+                if (isSubmitType) {
+                  setClickedButton(type);
+                } else {
+                  onClick?.(e);
+                }
+              }}
+              disabled={
+                formType === formTypes.RESET_PASSWORD &&
+                (errors.newPassword || errors.confirmPassword)
+              }
+              sx={{
+                flex: buttons.length > 1 ? 1 : 'auto',
+                width: buttons.length === 1 ? '100%' : 'auto',
+              }}
+              buttonType={buttonType}
+            />
+          );
+        })}
+      </div>
+    </form>
+  );
+};
+
+Form.propTypes = {
+  formType: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default Form;
