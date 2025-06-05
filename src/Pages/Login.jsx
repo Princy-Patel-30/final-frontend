@@ -14,13 +14,14 @@ const Login = () => {
     clearAuthError,
     clearAuthSuccess,
     isAuthenticated,
+    loading,
   } = useAuth();
   const navigate = useNavigate();
 
-  // Handle redirects and notifications
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/feed');
+    // Only navigate if authenticated and not loading
+    if (isAuthenticated && !loading) {
+      navigate('/', { replace: true });
     }
 
     if (successMessage) {
@@ -34,6 +35,7 @@ const Login = () => {
     }
   }, [
     isAuthenticated,
+    loading,
     successMessage,
     error,
     clearAuthSuccess,
@@ -41,7 +43,6 @@ const Login = () => {
     navigate,
   ]);
 
-  // Handle login submission
   const handleSubmit = async (data) => {
     try {
       await login(data);
@@ -50,11 +51,16 @@ const Login = () => {
     }
   };
 
+  // Don't render the login form if user is already authenticated
+  if (isAuthenticated && !loading) {
+    return null;
+  }
+
   return (
     <>
       <AuthCard title="Login" subtitle="Login to continue">
         <Form formType={formTypes.LOGIN} onSubmit={handleSubmit} />
-        {/* {loading && <p className="text-sm text-gray-500 mt-2">Loading...</p>} */}
+        {loading && <p className="mt-2 text-sm text-gray-500">Logging in...</p>}
         <p className="mt-4">
           New user?{' '}
           <span
@@ -74,8 +80,6 @@ const Login = () => {
           </span>
         </p>
       </AuthCard>
-
-      {/* Toast container */}
     </>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { IconConfig } from '../../Config/IconConfig';
-import PropTypes from 'prop-types';
 
 const IconRenderer = ({
   type,
@@ -9,6 +8,7 @@ const IconRenderer = ({
   onClick,
   className: additionalClassName,
   isActive = false,
+  isRaw = false,
   ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -26,6 +26,18 @@ const IconRenderer = ({
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
+
+  if (isRaw) {
+    // No wrapper, return only the icon component
+    return (
+      <IconComponent
+        className={iconClassName}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...props}
+      />
+    );
+  }
 
   const textElement = text && <span className="text-base">{text}</span>;
   const iconElement = (
@@ -49,18 +61,11 @@ const IconRenderer = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {childrenOrder}
+      {childrenOrder.map((child, idx) =>
+        child ? <span key={idx}>{child}</span> : null,
+      )}
     </div>
   );
-};
-
-IconRenderer.propTypes = {
-  type: PropTypes.string.isRequired,
-  text: PropTypes.string,
-  textPosition: PropTypes.oneOf(['right', 'left', 'top', 'bottom']),
-  onClick: PropTypes.func,
-  className: PropTypes.string,
-  isActive: PropTypes.bool,
 };
 
 export default IconRenderer;

@@ -94,9 +94,36 @@ export const refreshAccessToken = createAsyncThunk(
   },
 );
 
+// Helper functions for localStorage
+const saveUserToStorage = (user) => {
+  try {
+    localStorage.setItem('user', JSON.stringify(user));
+  } catch (error) {
+    console.error('Failed to save user to localStorage:', error);
+  }
+};
+
+const getUserFromStorage = () => {
+  try {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  } catch (error) {
+    console.error('Failed to get user from localStorage:', error);
+    return null;
+  }
+};
+
+const removeUserFromStorage = () => {
+  try {
+    localStorage.removeItem('user');
+  } catch (error) {
+    console.error('Failed to remove user from localStorage:', error);
+  }
+};
+
 const initialState = {
-  user: null,
-  isAuthenticated: false,
+  user: getUserFromStorage(), // Load user from localStorage on init
+  isAuthenticated: !!getUserFromStorage(), // Set based on stored user
   loading: false,
   error: null,
   successMessage: null,
@@ -112,6 +139,13 @@ const authSlice = createSlice({
     },
     clearSuccessMessage: (state) => {
       state.successMessage = null;
+    },
+    // Add action to set auth as checked without changing other state
+    setAuthChecked: (state) => {
+      state.authChecked = true;
+    },
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -144,10 +178,13 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.authChecked = true;
         state.successMessage = 'Login successful';
+        // Save user to localStorage
+        saveUserToStorage(action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.authChecked = true;
       });
 
     // Activate Account
@@ -210,6 +247,8 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.successMessage = 'Logout successful';
+        // Remove user from localStorage
+        removeUserFromStorage();
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
@@ -227,16 +266,25 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.successMessage = action.payload.message;
-        state.authChecked = true; // <-- set true
+        state.authChecked = true;
+        // If user data is included in refresh response, update it
+        if (action.payload.user) {
+          state.user = action.payload.user;
+          saveUserToStorage(action.payload.user);
+        }
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
-        state.authChecked = true; // <-- set true
+        state.authChecked = true;
+        state.user = null;
+        // Clear user from localStorage on refresh failure
+        removeUserFromStorage();
       });
   },
 });
 
-export const { clearError, clearSuccessMessage } = authSlice.actions;
+export const { clearError, clearSuccessMessage, setAuthChecked, setUser } =
+  authSlice.actions;
 export default authSlice.reducer;

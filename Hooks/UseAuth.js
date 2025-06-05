@@ -11,7 +11,7 @@ export const useAuth = () => {
   const { user, isAuthenticated, loading, error, successMessage } = useSelector(
     (state) => state.auth,
   );
-
+  console.log('user in use auth', user);
   const register = (userData) => dispatch(registerUser(userData));
   const login = (credentials) => dispatch(loginUser(credentials));
   const clearAuthError = () => dispatch(clearError());

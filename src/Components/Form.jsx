@@ -2,13 +2,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormFieldConfig, formTypes } from '../../Config/FormConfig';
 import { FormButtonConfig } from '../../Config/ButtonConfig';
-import { TextField } from '@mui/material';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
 import Button from './Button';
+import IconRenderer from './IconRenderer';
 import {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  editProfileSchema, // Make sure this is imported
 } from '../../Validations/authSchema';
 import PropTypes from 'prop-types';
 import { useRef, useEffect, useState } from 'react';
@@ -18,26 +20,37 @@ const schemaMap = {
   [formTypes.LOGIN]: loginSchema,
   [formTypes.FORGOT_PASSWORD]: forgotPasswordSchema,
   [formTypes.RESET_PASSWORD]: resetPasswordSchema,
+  [formTypes.EDIT_PROFILE]: editProfileSchema,
 };
 
-const Form = ({ formType, onSubmit }) => {
+const Form = ({ formType, onSubmit, defaultValues = {} }) => {
   const [clickedButton, setClickedButton] = useState(null);
+  const [passwordVisibility, setPasswordVisibility] = useState({});
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setFocus,
+    reset,
   } = useForm({
     mode: 'onTouched',
     reValidateMode: 'onTouched',
-    resolver: yupResolver(schemaMap[formType] || registerSchema), // fallback
+    resolver: yupResolver(schemaMap[formType] || registerSchema),
+    defaultValues: defaultValues,
   });
 
   const fields = FormFieldConfig[formType] || [];
   const buttons = FormButtonConfig[formType] || [];
 
   const inputRefs = useRef([]);
+
+  // Reset form with new default values when they change
+  useEffect(() => {
+    if (Object.keys(defaultValues).length > 0) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   useEffect(() => {
     if (fields.length > 0) {
@@ -61,6 +74,41 @@ const Form = ({ formType, onSubmit }) => {
     }
   };
 
+  const togglePasswordVisibility = (fieldName) => {
+    setPasswordVisibility((prev) => ({
+      ...prev,
+      [fieldName]: !prev[fieldName],
+    }));
+  };
+
+  const isPasswordField = (fieldType) => fieldType === 'password';
+
+  const getFieldType = (field) => {
+    if (isPasswordField(field.type)) {
+      return passwordVisibility[field.name] ? 'text' : 'password';
+    }
+    return field.type;
+  };
+
+  const getPasswordToggleIcon = (fieldName) => {
+    const isVisible = passwordVisibility[fieldName];
+    return (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() => togglePasswordVisibility(fieldName)}
+          edge="end"
+          size="small"
+        >
+          <IconRenderer
+            type={isVisible ? 'eye' : 'eyeClosed'}
+            isRaw={true}
+            className="h-5 w-5"
+          />
+        </IconButton>
+      </InputAdornment>
+    );
+  };
+
   return (
     <form
       onSubmit={handleSubmit((data) => onSubmit(data, clickedButton))}
@@ -70,7 +118,7 @@ const Form = ({ formType, onSubmit }) => {
         <div key={field.name} className="flex flex-col">
           <TextField
             {...register(field.name)}
-            type={field.type}
+            type={getFieldType(field)}
             label={field.placeholder}
             variant="outlined"
             error={!!errors[field.name]}
@@ -78,6 +126,11 @@ const Form = ({ formType, onSubmit }) => {
             fullWidth
             onKeyDown={(e) => handleKeyDown(e, index)}
             inputRef={(el) => (inputRefs.current[index] = el)}
+            InputProps={{
+              endAdornment: isPasswordField(field.type)
+                ? getPasswordToggleIcon(field.name)
+                : null,
+            }}
           />
         </div>
       ))}
@@ -126,6 +179,7 @@ const Form = ({ formType, onSubmit }) => {
 Form.propTypes = {
   formType: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  defaultValues: PropTypes.object,
 };
 
 export default Form;

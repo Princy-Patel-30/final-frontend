@@ -1,20 +1,22 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshAccessToken } from '../Redux/Slices/Auth.Slice';
+import { refreshAccessToken, setAuthChecked } from '../Redux/Slices/Auth.Slice';
 
 const useInitAuth = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated, loading, authChecked } = useSelector(
+  const { isAuthenticated, loading, authChecked, user } = useSelector(
     (state) => state.auth,
   );
 
   useEffect(() => {
-    console.log('Authenticated', isAuthenticated);
-    console.log('Initially login', authChecked);
-    if (!authChecked && !isAuthenticated) {
+    if (user && !authChecked) {
       dispatch(refreshAccessToken());
+    } else if (!user && !authChecked && !isAuthenticated) {
+      dispatch(refreshAccessToken());
+    } else if (!user && !isAuthenticated && !loading) {
+      dispatch(setAuthChecked());
     }
-  }, [dispatch, authChecked, isAuthenticated]);
+  }, [dispatch, authChecked, isAuthenticated, user, loading]);
 
   const isLoading = loading || !authChecked;
 

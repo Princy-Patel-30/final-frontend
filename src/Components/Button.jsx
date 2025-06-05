@@ -9,6 +9,7 @@ const Button = ({
   disabled = false,
   sx = {},
   buttonType = 'button',
+  fullWidth = true, // default true
 }) => {
   const muiProps = ButtonClassConfig[type] || {};
 
@@ -19,7 +20,7 @@ const Button = ({
       color={muiProps.color || 'primary'}
       onClick={onClick}
       disabled={disabled}
-      fullWidth
+      fullWidth={fullWidth}
       sx={{
         fontWeight: 'bold',
         fontSize: '1rem',
@@ -36,6 +37,7 @@ const Button = ({
 Button.propTypes = {
   type: PropTypes.string,
   text: PropTypes.string,
+  fullWidth: PropTypes.bool,
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
   sx: PropTypes.object,

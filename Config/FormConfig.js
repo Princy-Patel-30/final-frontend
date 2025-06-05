@@ -6,6 +6,7 @@ export const formTypes = {
   LOGIN: 'Login',
   FORGOT_PASSWORD: 'ForgotPassword',
   RESET_PASSWORD: 'ResetPassword',
+  EDIT_PROFILE: 'EditProfile',
 };
 
 export const FormFieldConfig = {
@@ -68,6 +69,20 @@ export const FormFieldConfig = {
       name: 'confirmPassword',
       type: 'password',
       placeholder: 'Confirm password',
+      className: commonInputStyle,
+    },
+  ],
+  [formTypes.EDIT_PROFILE]: [
+    {
+      name: 'name',
+      type: 'text',
+      placeholder: 'edit username',
+      className: commonInputStyle,
+    },
+    {
+      name: 'bio',
+      type: 'text',
+      placeholder: 'edit bio',
       className: commonInputStyle,
     },
   ],

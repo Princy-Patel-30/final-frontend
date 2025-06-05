@@ -15,6 +15,8 @@ import {
   AiFillMessage,
 } from 'react-icons/ai';
 
+import { LuEye, LuEyeClosed } from 'react-icons/lu';
+
 import {
   FaUserCircle,
   FaComment,
@@ -34,11 +36,40 @@ import {
   BsBookmarkFill,
   BsThreeDotsVertical,
 } from 'react-icons/bs';
+
 import { FiMoreHorizontal, FiSend, FiSettings } from 'react-icons/fi';
 import { IoNotificationsOutline } from 'react-icons/io5';
-import { MdEdit, MdDelete, MdEmail } from 'react-icons/md';
+import {
+  MdEdit,
+  MdDelete,
+  MdEmail,
+  MdClose,
+  MdCloudUpload,
+} from 'react-icons/md';
 
 export const IconConfig = {
+  close: {
+    icon: MdClose,
+    color: 'text-gray-600',
+    hover: 'hover:text-gray-800',
+  },
+  cloudUpload: {
+    icon: MdCloudUpload,
+    filledIcon: null,
+    color: 'text-gray-800',
+    hover: 'hover:text-gray-600',
+  },
+  eye: {
+    icon: LuEye,
+    color: 'text-grey-400',
+    hover: 'hover:text-gray-800',
+  },
+  eyeClosed: {
+    icon: LuEyeClosed,
+    color: 'text-grey-400',
+    hover: 'hover:text-gray-800',
+  },
+
   like: {
     icon: AiOutlineHeart,
     filledIcon: AiFillHeart,
@@ -94,8 +125,8 @@ export const IconConfig = {
     hover: 'hover:text-gray-800',
   },
   home: {
-    icon: AiFillHome,
-    filledIcon: null,
+    icon: AiOutlineHome,
+    filledIcon: AiFillHome,
     color: 'text-gray-800',
     hover: 'hover:text-gray-600',
   },
@@ -168,8 +199,8 @@ export const IconConfig = {
   search: {
     icon: AiOutlineSearch,
     filledIcon: null,
-    color: 'text-gray-800',
-    hover: 'hover:text-gray-600',
+    color: 'text-white-800',
+    hover: 'hover:text-white-600',
   },
   back: {
     icon: AiOutlineArrowLeft,
