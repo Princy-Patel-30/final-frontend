@@ -13,6 +13,8 @@ import {
   AiOutlineMail,
   AiOutlineMessage,
   AiFillMessage,
+  AiOutlineLeft,
+  AiOutlineRight,
 } from 'react-icons/ai';
 
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
@@ -37,7 +39,7 @@ import {
   BsThreeDotsVertical,
 } from 'react-icons/bs';
 
-import { FiMoreHorizontal, FiSend, FiSettings } from 'react-icons/fi';
+import { FiMoreHorizontal, FiSettings, FiSend } from 'react-icons/fi';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import {
   MdEdit,
@@ -69,7 +71,6 @@ export const IconConfig = {
     color: 'text-grey-400',
     hover: 'hover:text-gray-800',
   },
-
   like: {
     icon: AiOutlineHeart,
     filledIcon: AiFillHeart,
@@ -79,8 +80,8 @@ export const IconConfig = {
   liked: {
     icon: AiFillHeart,
     filledIcon: null,
-    color: 'text-red-600',
-    hover: 'hover:text-red-400',
+    color: 'text-pink-600',
+    hover: 'hover:text-pink-400',
   },
   comment: {
     icon: FaComment,
@@ -273,5 +274,17 @@ export const IconConfig = {
     filledIcon: FaUserCircle,
     color: 'text-gray-800',
     hover: 'hover:text-gray-800',
+  },
+  left: {
+    icon: AiOutlineLeft,
+    filledIcon: null,
+    color: 'text-gray-800',
+    hover: 'hover:text-gray-600',
+  },
+  right: {
+    icon: AiOutlineRight,
+    filledIcon: null,
+    color: 'text-gray-800',
+    hover: 'hover:text-gray-600',
   },
 };

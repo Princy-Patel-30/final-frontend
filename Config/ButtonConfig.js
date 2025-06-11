@@ -12,6 +12,7 @@ export const ButtonTypes = {
   FOLLOWING: 'following',
   POSTS: 'posts',
   SEARCH: 'search',
+  CREATE_POST: 'createPost',
 };
 
 export const ButtonClassConfig = {
@@ -137,6 +138,14 @@ export const ButtonClassConfig = {
     color: 'primary',
     sx: {
       backgroundColor: '#6b7280',
+      '&:hover': { backgroundColor: '#ff1493' },
+    },
+  },
+  createpost: {
+    variant: 'contained',
+    color: 'primary',
+    sx: {
+      backgroundColor: '#ff1493',
       '&:hover': { backgroundColor: '#ff1493' },
     },
   },

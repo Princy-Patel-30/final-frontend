@@ -5,13 +5,12 @@ import { logoutUser } from '../../Redux/Slices/Auth.Slice';
 import IconRenderer from './IconRenderer';
 
 const sidebarItems = [
-  { type: 'profile', text: 'Profile' },
   { type: 'home', text: 'Home' },
   { type: 'search', text: 'Search' },
-  { type: 'bookmark', text: 'Saved posts' },
   { type: 'plus', text: 'Create post' },
+  { type: 'bookmark', text: 'Saved posts' },
   { type: 'chat', text: 'Messages' },
-  { type: 'settings', text: 'Settings' },
+  { type: 'profile', text: 'Profile' },
 ];
 
 const Sidebar = () => {
@@ -25,21 +24,20 @@ const Sidebar = () => {
     setActiveIcon(type);
     if (mobileOpen) setMobileOpen(false);
 
-    // Handle profile navigation username logic outside switch
     if (type === 'profile') {
-      let username = user?.name;
-      if (!username) {
+      let userId = user?.id;
+      if (!userId) {
         try {
           const storedUser = JSON.parse(localStorage.getItem('user'));
-          username = storedUser?.name;
+          userId = storedUser?.id;
         } catch (error) {
-          console.error('Failed to get user from localStorage:', error);
+          console.error('Failed to get userId from localStorage:', error);
         }
       }
-      if (username) {
-        navigate(`/profile/${username}`);
+      if (userId) {
+        navigate(`/profile/${userId}`);
       } else {
-        console.error('No username available for profile navigation');
+        console.error('No userId available for profile navigation');
         navigate('/login');
       }
       return;
@@ -61,9 +59,6 @@ const Sidebar = () => {
       case 'chat':
         navigate('/messages');
         break;
-      case 'settings':
-        navigate('/settings');
-        break;
       case 'logout':
         await dispatch(logoutUser());
         navigate('/login');
@@ -75,49 +70,62 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile toggle button */}
-      <div className="md:hidden">
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 z-50 flex h-16 w-full items-center justify-around bg-gray-100 shadow-xl md:hidden">
+        {sidebarItems.map(({ type }) => (
+          <button
+            key={type}
+            onClick={() => handleClick(type)}
+            className={`p-2 ${activeIcon === type ? 'bg-pink-200' : ''} rounded-full`}
+          >
+            <IconRenderer
+              type={type}
+              size="24"
+              isRaw={true}
+              className={`text-gray-800 ${activeIcon === type ? 'text-pink-600' : ''}`}
+            />
+          </button>
+        ))}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="text-gray-800 focus:outline-none"
+          className={`p-2 ${activeIcon === 'menu' ? 'bg-pink-200' : ''} rounded-full`}
         >
-          <IconRenderer type="menu" size="28" />
+          <IconRenderer
+            type="menu"
+            size="24"
+            isRaw={true}
+            className={`text-gray-800 ${activeIcon === 'menu' ? 'text-gray-600' : ''}`}
+          />
         </button>
       </div>
 
+      {/* Full Sidebar (Mobile Toggle or Desktop) */}
       <div
-        className={`fixed top-0 left-0 z-40 h-full w-64 transform border-r bg-white transition-transform duration-300 ease-in-out ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:static md:block md:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 h-full w-64 transform bg-gray-100 transition-transform duration-300 ease-in-out ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:static md:block md:h-full md:w-full md:translate-x-0 md:rounded-r-2xl`}
       >
-        <div className="flex h-full flex-col justify-between px-4 pt-8 pb-4">
-          <div className="flex flex-col items-start gap-6">
+        <div className="flex h-full flex-col justify-between p-4">
+          <div className="flex flex-col items-start gap-2">
             {sidebarItems.map(({ type, text }) => (
               <IconRenderer
                 key={type}
                 type={type}
                 text={text}
-                size="32"
+                size="28"
                 onClick={() => handleClick(type)}
                 isActive={activeIcon === type}
-                className="text-2xl"
+                className="text-xl"
               />
             ))}
-            <IconRenderer
-              type="logout"
-              text="Sign Out"
-              size="32"
-              onClick={() => handleClick('logout')}
-              isActive={activeIcon === 'logout'}
-              className="text-2xl"
-            />
           </div>
-
           <IconRenderer
-            type="menu"
-            text="Menu"
+            type="logout"
+            text="Sign Out"
             size="28"
-            onClick={() => handleClick('menu')}
-            isActive={activeIcon === 'menu'}
-            className="self-center text-xl"
+            onClick={() => handleClick('logout')}
+            isActive={activeIcon === 'logout'}
+            className="text-xl"
           />
         </div>
       </div>

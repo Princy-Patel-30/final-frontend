@@ -12,10 +12,7 @@ const Loader = ({ size = 'medium' }) => {
 
   return (
     <div className="flex items-center justify-center p-10">
-      <FaSpinner
-        className={clsx('animate-spin', sizeClasses[size])}
-        aria-label="Loading"
-      />
+      <FaSpinner className={clsx('animate-spin', sizeClasses[size])} />
     </div>
   );
 };

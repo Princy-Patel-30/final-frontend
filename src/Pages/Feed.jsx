@@ -1,15 +1,15 @@
-import ChatBox from '../Components/Chatbox';
+// import ChatBox from '../Components/ChatBox';
 import PostFeed from '../Components/Postfeed';
 
 const Feed = () => {
   return (
-    <div className="flex h-screen w-screen flex-row bg-gray-100">
-      <div className="relative flex flex-1 flex-col">
-        <div className="flex flex-1 overflow-y-auto">
-          <PostFeed />
-          <ChatBox />
-        </div>
+    <div className="bg-pink-25 flex h-full w-full">
+      <div className="h-screen flex-1 overflow-hidden p-2 md:p-4">
+        <PostFeed />
       </div>
+      {/* <div className="w-90 bg-white shadow-inner hidden md:flex flex-col rounded-l-2xl">
+        <ChatBox />
+      </div> */}
     </div>
   );
 };

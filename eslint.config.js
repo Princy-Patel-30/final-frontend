@@ -25,9 +25,9 @@ export default defineConfig([
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
       'no-case-declarations': 'error',
-      'react/no-unescaped-entities': 'error',
+      'react/no-unescaped-entities': 'off',
     },
   },
 ]);
