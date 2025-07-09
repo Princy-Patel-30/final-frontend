@@ -8,7 +8,7 @@ import {
   useUnfollow,
 } from '../../Hooks/useProfile.js';
 import Loader from '../../Utils/Loader.jsx';
-import AvatarView from './Avatarview.jsx';
+import AvatarView from './AvatarView.jsx';
 import Button from './Button.jsx';
 import { ButtonTypes } from '../../Config/ButtonConfig';
 import EditProfileModal from '../Modals/EditProfileModal';
