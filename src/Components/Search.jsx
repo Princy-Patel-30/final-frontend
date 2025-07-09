@@ -6,7 +6,7 @@ import { ButtonTypes } from '../../Config/ButtonConfig';
 import IconRenderer from '../Components/IconRenderer';
 import { debounce } from 'lodash';
 import { useSearchUsers, useFollow, useUnfollow } from '../../Hooks/useProfile';
-import AvatarView from './Avatarview';
+import AvatarView from '../Components/AvatarView';
 
 const Search = () => {
   const [inputValue, setInputValue] = useState('');
