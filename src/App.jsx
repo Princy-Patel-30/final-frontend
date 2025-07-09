@@ -13,7 +13,7 @@ import Profile from './Pages/Profile';
 import PageNotFound from './Pages/PageNotFound';
 import Loader from '../Utils/Loader';
 import './App.css';
-import useInitAuth from '../Hooks/useinitAuth';
+import useInitAuth from './Hooks/useInitAuth';
 import MainLayout from './Layout/MainLayout';
 import Search from './Components/Search';
 import SavedPost from './Components/SavedPost';
