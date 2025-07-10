@@ -34,8 +34,7 @@ export const usePostDetails = (postId) => {
 export const useCreatePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ content, mediaFiles }) =>
-      PostService.createPost(content, mediaFiles),
+    mutationFn: (formData) => PostService.createPost(formData), // Accepts FormData directly!
     onSuccess: () => {
       queryClient.invalidateQueries(['homeFeed']);
       queryClient.invalidateQueries(['userPosts']);
